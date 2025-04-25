@@ -6,10 +6,11 @@
 // @license         MIT
 // @match           https://kemono.su/*
 // @icon            https://kemono.party/static/favicon.ico
-// @grant           GM_getValue
-// @grant           GM_setValue
+// @grant           GM_download
+// @grant           GM_getResourceText
+// @grant           GM_info
 // @grant           GM_registerMenuCommand
-// @grant           GM_unregisterMenuCommand
+// @grant           GM_xmlhttpRequest
 // @namespace https://greasyfork.org/users/1377032
 // ==/UserScript==
 
@@ -117,25 +118,25 @@ async function DownloadAll() {
     for(var i = 0; i < download_list.length; i++){
         var download_url = download_list[i].querySelector("a.fileThumb").href;
         var url = download_url.toString().split("?f=")[0];
-        var filename = url.split("/").pop();
+        var filename = decodeURI(download_list[i].querySelector("a.fileThumb").download);
         // download image
-        await downloadImage(url, filename);
+        setTimeout(downloadImage(url, filename),500);
     }
 }
 
-async function downloadImage(url, name){
+function downloadImage(url, name){
     fetch(url)
       .then(resp => resp.blob())
       .then(blob => {
-          const url = window.URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.style.display = 'none';
-          a.href = url;
-          // the filename you want
-          a.download = name;
-          document.body.appendChild(a);
-          a.click();
-          window.URL.revokeObjectURL(url);
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            // the filename you want
+            a.download = name;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
       })
       .catch(() => alert('An error sorry'));
 }
