@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name            Kemono下载当前页面
 // @description     Kemono下载当前页面的所有图片
-// @version         1.0.1
+// @version         1.0.2
 // @author          Ealvn
 // @license         MIT
 // @match           https://kemono.su/*
@@ -49,6 +49,7 @@
     const item = document.createElement('item');
     item.id = 'SIR';
     item.innerHTML = `
+        <input type="text" id="filename" placeholder="文件名..." size="16">
         <button class="SIR-button">一键下载当前页面</button>
         `;
 
@@ -57,6 +58,7 @@
     //创建样式
     const style = document.createElement('style');
     style.innerHTML = `
+        
         /* Light mode */
         @media (prefers-color-scheme: light) {
             #SIR * {
@@ -75,6 +77,17 @@
                 position:fixed;
                 bottom:2px;
                 right:2px;
+                border: solid 2px black;
+                z-index: 9999;
+            }
+            #filename {
+                display: inline-block;
+                height: 22px;
+                opacity: 0.5;
+                font-size: 13px;
+                position:fixed;
+                bottom:27px;
+                right:12px;
                 border: solid 2px black;
                 z-index: 9999;
             }
@@ -100,6 +113,17 @@
                 border: solid 2px white;
                 z-index: 9999;
             }
+            #filename {
+                display: inline-block;
+                height: 22px;
+                opacity: 0.5;
+                font-size: 13px;
+                position:fixed;
+                bottom:27px;
+                right:12px;
+                border: solid 2px white;
+                z-index: 9999;
+            }
         }
         
         `;
@@ -115,10 +139,14 @@
 async function DownloadAll() {
     
     var download_list = document.querySelectorAll("div.post__thumbnail");
+    var text_input = document.getElementById("filename").value;
     for(var i = 0; i < download_list.length; i++){
         var download_url = download_list[i].querySelector("a.fileThumb").href;
         var url = download_url.toString().split("?f=")[0];
         var filename = decodeURI(download_list[i].querySelector("a.fileThumb").download);
+        if(text_input != ""){
+            filename = text_input + "_" + i.toString();
+        }
         // download image
         setTimeout(downloadImage(url, filename),500);
     }
