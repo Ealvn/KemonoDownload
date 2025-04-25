@@ -143,10 +143,11 @@ async function DownloadAll() {
     for(var i = 0; i < download_list.length; i++){
         var download_url = download_list[i].querySelector("a.fileThumb").href;
         var url = download_url.toString().split("?f=")[0];
-        var filename = decodeURI(download_list[i].querySelector("a.fileThumb").download);
+        var filename = decodeURI(document.querySelector("h1.post__title>span").innerHTML);
         if(text_input != ""){
-            filename = text_input + "_" + i.toString();
+            filename = text_input;
         }
+        filename = filename + "_" + i.toString();
         // download image
         setTimeout(downloadImage(url, filename),500);
     }
