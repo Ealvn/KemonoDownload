@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name            Kemono下载当前页面
 // @description     Kemono下载当前页面的所有图片
-// @version         1.0.2
+// @version         1.0.3
 // @author          Ealvn
 // @license         MIT
 // @match           https://kemono.su/*
@@ -58,7 +58,7 @@
     //创建样式
     const style = document.createElement('style');
     style.innerHTML = `
-        
+
         /* Light mode */
         @media (prefers-color-scheme: light) {
             #SIR * {
@@ -125,7 +125,7 @@
                 z-index: 9999;
             }
         }
-        
+
         `;
 
     const button = item.querySelector('.SIR-button')
@@ -137,25 +137,41 @@
 })();
 
 async function DownloadAll() {
-    
+
     var download_list = document.querySelectorAll("div.post__thumbnail");
     var text_input = document.getElementById("filename").value;
     for(var i = 0; i < download_list.length; i++){
-        var download_url = download_list[i].querySelector("a.fileThumb").href;
-        var url = download_url.toString().split("?f=")[0];
-        var filename = decodeURI(document.querySelector("h1.post__title>span").innerHTML);
-        if(text_input != ""){
-            filename = text_input;
-        }
-        filename = filename + "_" + i.toString();
-        // download image
-        setTimeout(downloadImage(url, filename),500);
+        var download_url = ""
+        try{
+            download_url = download_list[i].querySelector("a.fileThumb").href;
+        } catch (error) {
+            download_url = download_list[i].querySelector("img").src;
+        }finally {
+            var url = download_url.toString().split("?f=")[0];
+            var filename = decodeURI(document.querySelector("h1.post__title>span").innerHTML);
+            if(text_input != ""){
+                filename = text_input;
+            }
+            filename = filename + "_" + i.toString();
+            // download image
+            console.log(" " + i + " " + url)
+            setTimeout(downloadImage(url, filename),500);
+        };
     }
 }
 
-function downloadImage(url, name){
-    fetch(url)
-      .then(resp => resp.blob())
+function downloadImage(url, name, retries = 3) {
+    fetch(url, {
+        headers: {
+            'Cache-Control': 'no-cache'
+        }
+    })
+      .then(resp => {
+          if (!resp.ok) {
+              throw new Error(`HTTP error! status: ${resp.status}`);
+          }
+          return resp.blob();
+      })
       .then(blob => {
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -167,5 +183,14 @@ function downloadImage(url, name){
             a.click();
             window.URL.revokeObjectURL(url);
       })
-      .catch(() => alert('An error sorry'));
+      .catch(error => {
+          if (retries > 0) {
+              console.warn(`Download failed for ${url}. Retrying... (${retries} attempts left)`);
+              // Wait a short duration before retrying
+              setTimeout(() => downloadImage(url, name, retries - 1), 1000);
+          } else {
+              console.error(`Download failed for ${url} after multiple retries:`, error);
+              alert(`Failed to download ${name}`);
+          }
+      });
 }
