@@ -5,7 +5,7 @@
 // @author          Ealvn
 // @license         MIT
 // @match           https://kemono.cr/*
-// @icon            https://kemono.party/static/favicon.ico
+// @icon            https://kemono.cr/static/favicon.ico
 // @grant           GM_download
 // @grant           GM_getResourceText
 // @grant           GM_info
@@ -35,7 +35,7 @@
     //     openInNewId = GM_registerMenuCommand(`[${openInNew ? "✔" : "✖"}]新建标签页打开`, openInNew_callback);
     // }
 
-    // var domain = GM_getValue('Domain', 'kemono.party');
+    // var domain = GM_getValue('Domain', 'kemono.cr');
 
     // let domainId = GM_registerMenuCommand(`当前域名：${domain}`, domain_callback);
 
