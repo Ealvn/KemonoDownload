@@ -4,7 +4,7 @@
 // @version         1.0.4
 // @author          Ealvn
 // @license         MIT
-// @match           https://kemono.su/*
+// @match           https://kemono.cr/*
 // @icon            https://kemono.party/static/favicon.ico
 // @grant           GM_download
 // @grant           GM_getResourceText
