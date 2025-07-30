@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name            Kemono下载当前页面
 // @description     Kemono下载当前页面的所有图片
-// @version         1.0.4
+// @version         1.0.5
 // @author          Ealvn
 // @license         MIT
 // @match           https://kemono.cr/*
